@@ -1,0 +1,11 @@
+syntax: glob
+.hgignore
+
+[Dd]ebug/
+[Rr]elease/
+[Dd]ebug_hl2mp/
+[Rr]elease_hl2mp/
+ipch/
+*.*sdf
+*.suo
+*.user
