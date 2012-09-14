@@ -31,9 +31,6 @@
     <Filter Include="Link Libraries">
       <UniqueIdentifier>{3c558d68-26ed-4c11-b4b7-e9a6e3033127}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resources">
-      <UniqueIdentifier>{d16f0e4a-1660-4b1d-ad23-9d8801e08731}</UniqueIdentifier>
-    </Filter>
     <Filter Include="MP3">
       <UniqueIdentifier>{77cbb576-baf5-46b5-b764-bf668fd76153}</UniqueIdentifier>
     </Filter>
@@ -3385,10 +3382,5 @@
     <Library Include="..\..\lib\public\vstdlib.lib">
       <Filter>Link Libraries</Filter>
     </Library>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="client_hl2mp.vpc">
-      <Filter>Resources</Filter>
-    </None>
   </ItemGroup>
 </Project>

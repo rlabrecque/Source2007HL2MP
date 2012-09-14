@@ -51,6 +51,8 @@
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</GenerateManifest>
     <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</PostBuildEventUseInBuild>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">client</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">client</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <PreBuildEvent>
@@ -58,14 +60,14 @@
       </Command>
     </PreBuildEvent>
     <CustomBuildStep>
-      <Message>Copying to c:\games\steam\steamapps\SourceMods\source2007hl2mp\bin\</Message>
-      <Command>if exist "c:\games\steam\steamapps\SourceMods\source2007hl2mp\bin\client.dll" attrib -r "c:\games\steam\steamapps\SourceMods\source2007hl2mp\bin\client.dll"
-copy "$(TargetDir)"client.dll "c:\games\steam\steamapps\SourceMods\source2007hl2mp\bin"
-</Command>
-      <Outputs>c:\games\steam\steamapps\SourceMods\source2007hl2mp\bin\client.dll;%(Outputs)</Outputs>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
     <ClCompile>
-      <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>.\;..\..\common;..\..\public;..\..\public\tier0;..\..\public\tier1;..\..\vgui2\include;..\..\vgui2\controls;..\..\game\shared;.\game_controls;hl2mp\UI;.\hl2mp;..\..\game\shared\hl2mp;.\hl2;.\hl2\elements;..\..\game\shared\hl2;..\..\game\shared\Multiplayer;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WIN32;_DEBUG;DEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;NO_STRING_T;CLIENT_DLL;VECTOR;PROTECTED_THINGS_ENABLE;fopen=dont_use_fopen;strncpy=use_Q_strncpy_instead;_snprintf=use_Q_snprintf_instead;ENABLE_HTMLWINDOW;HL2MP;HL2_CLIENT_DLL;VERSION_SAFE_STEAM_API_INTERFACES;MP_SDK;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -101,16 +103,17 @@ copy "$(TargetDir)"client.dll "c:\games\steam\steamapps\SourceMods\source2007hl2
     <Link>
       <AdditionalDependencies>winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ShowProgress>NotSet</ShowProgress>
-      <OutputFile>$(OutDir)Client.dll</OutputFile>
+      <OutputFile>$(OutDir)client.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\lib\common;..\..\lib\public;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <IgnoreSpecificDefaultLibraries>libc;libcd;libcmt;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries>libc;libcd;libcmtd;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(IntDir)$(TargetName).pdb</ProgramDatabaseFile>
       <GenerateMapFile>true</GenerateMapFile>
       <MapFileName>$(IntDir)$(TargetName).map</MapFileName>
       <SubSystem>Windows</SubSystem>
-      <BaseAddress> </BaseAddress>
+      <BaseAddress>
+      </BaseAddress>
       <TargetMachine>MachineX86</TargetMachine>
       <LinkErrorReporting>PromptImmediately</LinkErrorReporting>
     </Link>
@@ -122,11 +125,24 @@ copy "$(TargetDir)"client.dll "c:\games\steam\steamapps\SourceMods\source2007hl2
     </Xdcmake>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>$(OutDir)Client.bsc</OutputFile>
+      <OutputFile>$(OutDir)client.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>if exist "..\..\..\build\bin\." goto ValveStart
+mkdir "..\..\..\build\bin\."
+:ValveStart
+copy "$(TargetDir)"$(TargetFileName) "..\..\..\build\bin\.\$(TargetFileName)"
+if ERRORLEVEL 1 goto BuildEventFailed
+if exist "$(TargetDir)"$(TargetName).map copy "$(TargetDir)"$(TargetName).map "..\..\..\build\bin\.\$(TargetName).map"
+copy "$(TargetDir)"$(TargetName).pdb "..\..\..\build\bin\.\$(TargetName).pdb"
+if ERRORLEVEL 1 goto BuildEventFailed
+goto BuildEventOK
+:BuildEventFailed
+echo *** ERROR! PostBuildStep FAILED for $(ProjectName)! EXE or DLL is probably running. ***
+del /q "$(TargetDir)"$(TargetFileName)
+exit 1
+:BuildEventOK</Command>
+      <Message>Publishing to \build\bin\.</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -135,13 +151,12 @@ copy "$(TargetDir)"client.dll "c:\games\steam\steamapps\SourceMods\source2007hl2
       </Command>
     </PreBuildEvent>
     <CustomBuildStep>
-      <Message>Copying to c:\games\steam\steamapps\SourceMods\source2007hl2mp\bin\</Message>
-      <Command>if exist "c:\games\steam\steamapps\SourceMods\source2007hl2mp\bin\client.dll" attrib -r "c:\games\steam\steamapps\SourceMods\source2007hl2mp\bin\client.dll"
-copy "$(TargetDir)"client.dll "c:\games\steam\steamapps\SourceMods\source2007hl2mp\bin"
-if exist "c:\games\steam\steamapps\SourceMods\source2007hl2mp\bin\client.pdb" attrib -r "c:\games\steam\steamapps\SourceMods\source2007hl2mp\bin\client.pdb"
-if exist "$(TargetDir)"client.pdb copy "$(TargetDir)"client.pdb "c:\games\steam\steamapps\SourceMods\source2007hl2mp\bin\client.pdb"
-</Command>
-      <Outputs>c:\games\steam\steamapps\SourceMods\source2007hl2mp\bin\client.dll;c:\games\steam\steamapps\SourceMods\source2007hl2mp\bin\client.pdb;%(Outputs)</Outputs>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
+      <Outputs>
+      </Outputs>
     </CustomBuildStep>
     <ClCompile>
       <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
@@ -182,7 +197,7 @@ if exist "$(TargetDir)"client.pdb copy "$(TargetDir)"client.pdb "c:\games\steam\
     <Link>
       <AdditionalDependencies>winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ShowProgress>NotSet</ShowProgress>
-      <OutputFile>$(OutDir)Client.dll</OutputFile>
+      <OutputFile>$(OutDir)client.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\lib\common;..\..\lib\public;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libc;libcd;libcmtd;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
@@ -193,7 +208,8 @@ if exist "$(TargetDir)"client.pdb copy "$(TargetDir)"client.pdb "c:\games\steam\
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <BaseAddress> </BaseAddress>
+      <BaseAddress>
+      </BaseAddress>
       <TargetMachine>MachineX86</TargetMachine>
       <LinkErrorReporting>PromptImmediately</LinkErrorReporting>
     </Link>
@@ -205,11 +221,24 @@ if exist "$(TargetDir)"client.pdb copy "$(TargetDir)"client.pdb "c:\games\steam\
     </Xdcmake>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>$(OutDir)Client.bsc</OutputFile>
+      <OutputFile>$(OutDir)client.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>if exist "..\..\..\build\bin\." goto ValveStart
+mkdir "..\..\..\build\bin\."
+:ValveStart
+copy "$(TargetDir)"$(TargetFileName) "..\..\..\build\bin\.\$(TargetFileName)"
+if ERRORLEVEL 1 goto BuildEventFailed
+if exist "$(TargetDir)"$(TargetName).map copy "$(TargetDir)"$(TargetName).map "..\..\..\build\bin\.\$(TargetName).map"
+copy "$(TargetDir)"$(TargetName).pdb "..\..\..\build\bin\.\$(TargetName).pdb"
+if ERRORLEVEL 1 goto BuildEventFailed
+goto BuildEventOK
+:BuildEventFailed
+echo *** ERROR! PostBuildStep FAILED for $(ProjectName)! EXE or DLL is probably running. ***
+del /q "$(TargetDir)"$(TargetFileName)
+exit 1
+:BuildEventOK</Command>
+      <Message>Publishing to \build\bin\.</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -1474,9 +1503,6 @@ if exist "$(TargetDir)"client.pdb copy "$(TargetDir)"client.pdb "c:\games\steam\
     <Library Include="..\..\lib\public\tier3.lib" />
     <Library Include="..\..\lib\public\vgui_controls.lib" />
     <Library Include="..\..\lib\public\vstdlib.lib" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="client_hl2mp.vpc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
